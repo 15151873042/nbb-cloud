@@ -1,0 +1,42 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        # 认证中心
+        - id: nbb-auth
+          uri: lb://nbb-auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            # 验证码处理
+            - CacheRequestFilter
+            - ValidateCodeFilter
+            - StripPrefix=1
+        # 系统模块
+        - id: nbb-system
+          uri: lb://nbb-system
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+
+    loadbalancer:
+      nacos:
+        # 禁用NacosLoadBalancer，使用自定义的负载均衡器
+        enabled: false
+
+  redis:
+    host: localhost
+    database: 1
+    port: 6379
+    password: root
+
+
+# 安全配置
+security:
+  # 验证码
+  captcha:
+    enabled: true
+    type: math
+    validateUrls:
+      - /auth/login

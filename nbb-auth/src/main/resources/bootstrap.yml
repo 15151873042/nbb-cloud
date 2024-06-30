@@ -1,0 +1,20 @@
+server:
+  port: 8200
+
+spring:
+  application:
+    name: nbb-auth
+  profiles:
+    active: @package.environment@
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+        namespace: nbb-cloud
+        file-extension: yml
+        shared-configs:
+          # 需要共享的配置文件信息
+          - data-id: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+            refresh: true # 该配置文件修改之后是否刷新到本地
